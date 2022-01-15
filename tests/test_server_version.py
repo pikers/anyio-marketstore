@@ -1,7 +1,7 @@
 
-from trio_marketstore import open_marketstore_grpc
+from anyio_marketstore import open_marketstore_grpc
 
-from trio_marketstore.proto.marketstore_pb2 import ServerVersionRequest
+from anyio_marketstore.proto.marketstore_pb2 import ServerVersionRequest
 
 
 async def test_server_version():

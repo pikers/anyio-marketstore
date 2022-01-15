@@ -4,9 +4,9 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='trio-marketstore',
+    name='anyio-marketstore',
     version='0.1a0',
-    packages=['trio_marketstore'],
+    packages=['anyio_marketstore'],
     package_dir={'':'src'},
     install_requires=[
         'purerpc'
