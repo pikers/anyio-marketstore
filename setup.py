@@ -9,6 +9,7 @@ setup(
     packages=['anyio_marketstore'],
     package_dir={'':'src'},
     install_requires=[
+        'numpy',
         'purerpc'
     ]
 )
