@@ -43,7 +43,7 @@ def generate_ms_array(
     size: float,
     timestamp: Optional[float] = None
 ) -> np.array:
-    """Return marketstore writeable structarray from quote ``dict``.
+    """Return marketstore writeable structarray.
     """
     if not timestamp:
         timestamp = time.time_ns()
