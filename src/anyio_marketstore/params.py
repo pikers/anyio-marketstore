@@ -1,14 +1,18 @@
 from typing import Union, List, Any
+# import pendulum
 import pandas as pd
 import numpy as np
 from enum import Enum
 
 
 def get_timestamp(value: Union[float, int, str]) -> pd.Timestamp:
+
     if value is None:
         return None
+
     if isinstance(value, (float, np.float, int, np.integer)):
         return pd.Timestamp(value, unit='s')
+
     return pd.Timestamp(value)
 
 
@@ -27,7 +31,8 @@ class ListSymbolsFormat(Enum):
     """
     # symbol names only. (e.g. ["AAPL", "AMZN", ...])
     SYMBOL = "symbol"
-    # {symbol}/{timeframe}/{attribute_group} format. (e.g. ["AAPL/1Min/TICK", "AMZN/1Sec/OHLCV",...])
+    # {symbol}/{timeframe}/{attribute_group} format.
+    # (e.g. ["AAPL/1Min/TICK", "AMZN/1Sec/OHLCV",...])
     TBK = "tbk"
 
 
@@ -47,7 +52,12 @@ class Params(object):
     ):
         if not isiterable(symbols):
             symbols = [symbols]
-        self.tbk = ','.join(symbols) + "/" + timeframe + "/" + attrgroup
+
+        # tbk elements
+        self.symbols = symbols
+        self.timeframe = timeframe
+        self.attrgroup = attrgroup
+
         self.key_category = None  # server default
         self.start = get_timestamp(start)
         self.end = get_timestamp(end)
@@ -55,21 +65,40 @@ class Params(object):
         self.limit_from_start = limit_from_start
         self.columns = columns
         self.functions = functions
+        self._mk_tbk()
 
-    def set(self, key: str, val: Any):
+    def _mk_tbk(self) -> str:
+        self.tbk = (
+            ','.join(self.symbols) +
+            "/" + self.timeframe +
+            "/" + self.attrgroup
+        )
+        return self.tbk
+
+    def set(
+        self,
+        key: str,
+        val: Any,
+
+    ) -> None:
         if not hasattr(self, key):
             raise AttributeError()
-        if key in ('start', 'end'):
+
+        if key in ('timeframe', 'symbols', 'attrgroup'):
+            setattr(self, key, val)
+            self._mk_tbk()
+
+        elif key in ('start', 'end'):
             setattr(self, key, get_timestamp(val))
+
         else:
             setattr(self, key, val)
-        return self
 
     def __repr__(self) -> str:
         content = ('tbk={}, start={}, end={}, '.format(
             self.tbk, self.start, self.end,
         ) +
                    'limit={}, '.format(self.limit) +
-                   'limit_from_start={}'.format(self.limit_from_start) +
+                   'limit_from_start={}, '.format(self.limit_from_start) +
                    'columns={}'.format(self.columns))
         return 'Params({})'.format(content)
