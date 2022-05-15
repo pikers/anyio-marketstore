@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import six
 
 from .proto.marketstore_pb2 import MultiQueryResponse
@@ -68,15 +68,15 @@ class DataSet(object):
     def attribute_group(self) -> str:
         return self.key.split('/')[2]
 
-    def df(self) -> pd.DataFrame:
-        idxname = self.array.dtype.names[0]
-        df = pd.DataFrame(self.array).set_index(idxname)
-        index = pd.to_datetime(df.index, unit='s', utc=True)
-        tz = self.timezone
-        if tz.lower() != 'utc':
-            index = index.tz_convert(tz)
-        df.index = index
-        return df
+    # def df(self) -> pd.DataFrame:
+    #     idxname = self.array.dtype.names[0]
+    #     df = pd.DataFrame(self.array).set_index(idxname)
+    #     index = pd.to_datetime(df.index, unit='s', utc=True)
+    #     tz = self.timezone
+    #     if tz.lower() != 'utc':
+    #         index = index.tz_convert(tz)
+    #     df.index = index
+    #     return df
 
     def __repr__(self):
         a = self.array
