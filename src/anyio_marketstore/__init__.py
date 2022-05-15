@@ -46,7 +46,9 @@ class MarketstoreClient:
         req = MultiCreateRequest(requests=[
             CreateRequest(
                 key="{}:Symbol/Timeframe/AttributeGroup".format(tbk),
-                data_shapes=[DataShape(name=name, type=typ) for name, typ in dtype],
+                data_shapes=[
+                    DataShape(name=name, type=typ) for name, typ in dtype
+                ],
                 row_type="variable" if isvariablelength else "fixed",
             )
         ])
@@ -109,7 +111,12 @@ class MarketstoreClient:
 
         return resp.results
 
-    def build_query(self, params: Union[Params, List[Params]]) -> MultiQueryRequest:
+    def build_query(
+        self,
+        params: Union[Params, List[Params]],
+
+    ) -> MultiQueryRequest:
+
         reqs = MultiQueryRequest(requests=[])
         if not isiterable(params):
             params = [params]
@@ -120,31 +127,37 @@ class MarketstoreClient:
 
             if param.key_category is not None:
                 req.key_category = param.key_category
+
             if param.start is not None:
-                req.epoch_start = int(param.start.value / (10 ** 9))
+                ts = param.start.float_timestamp
+                secs, dec = divmod(ts, 1.)
+                req.epoch_start = int(ts)
+                start_ns = int(dec * 10**9)
 
-                # support nanosec
-                start_nanosec = int(param.start.value % (10 ** 9))
-                if start_nanosec != 0:
-                    req.epoch_start_nanos = start_nanosec
-
-            if param.end is not None:
-                req.epoch_end = int(param.end.value / (10 ** 9))
-
-                # support nanosec
-                end_nanosec = int(param.end.value % (10 ** 9))
-                if end_nanosec != 0:
-                    req.epoch_end_nanos = end_nanosec
+                if start_ns != 0:
+                    req.epoch_start_nanos = start_ns
 
             if param.end is not None:
-                req.epoch_end = int(param.end.value / (10 ** 9))
+                ts = param.end.float_timestamp
+                secs, dec = divmod(ts, 1.)
+
+                req.epoch_end = int(ts)
+                end_ns = int(dec * 10**9)
+
+                if end_ns != 0:
+                    req.epoch_end_nanos = end_ns
+
             if param.limit is not None:
                 req.limit_record_count = int(param.limit)
+
             if param.limit_from_start is not None:
                 req.limit_from_start = bool(param.limit_from_start)
+
             if param.functions is not None:
                 req.functions.extend(param.functions)
+
             reqs.requests.append(req)
+
         return reqs
 
     async def query(self, params: Union[Params, List[Params]]) -> QueryReply:
@@ -164,6 +177,7 @@ class MarketstoreClient:
 
         req = MultiKeyRequest(requests=[KeyRequest(key=tbk)])
         return await self.stub.Destroy(req)
+
 
 @asynccontextmanager
 async def open_marketstore_client(

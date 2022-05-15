@@ -1,19 +1,18 @@
 from typing import Union, List, Any
-# import pendulum
-import pandas as pd
+import pendulum
 import numpy as np
 from enum import Enum
 
 
-def get_timestamp(value: Union[float, int, str]) -> pd.Timestamp:
+def get_timestamp(value: Union[float, int, str]) -> pendulum.DateTime:
 
     if value is None:
         return None
 
     if isinstance(value, (float, np.float, int, np.integer)):
-        return pd.Timestamp(value, unit='s')
+        return pendulum.from_timestamp(value)
 
-    return pd.Timestamp(value)
+    return pendulum.parse(value)
 
 
 def isiterable(something: Any) -> bool:
