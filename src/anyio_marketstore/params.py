@@ -9,7 +9,7 @@ def get_timestamp(value: Union[float, int, str]) -> pendulum.DateTime:
     if value is None:
         return None
 
-    if isinstance(value, (float, np.float, int, np.integer)):
+    if isinstance(value, (float, float, int, np.integer)):
         return pendulum.from_timestamp(value)
 
     return pendulum.parse(value)
