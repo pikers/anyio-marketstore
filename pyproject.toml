@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "anyio-marketstore"
+version = "0.1a0"
+packages = [{include = 'anyio_marketstore', from='src'}]
+description = ""
+authors = ["Guillermo Rodriguez <guillermo@telos.net>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+protobuf = "^4.25.2"
+pendulum = "^3.0.0"
+
+# purerpc & deps from git cause poerty cant find him
+h2 = {git = "https://github.com/python-hyper/h2.git", rev = "v3.2.0"}
+hpack = {git = "https://github.com/python-hyper/hpack.git", rev = "v3.0.0"}
+hyperframe = {git = "https://github.com/python-hyper/hyperframe.git", rev = "v5.2.0"}
+purerpc = {git = "https://github.com/python-trio/purerpc.git", rev = "v0.8.0"}
+
+[tool.poetry.group.dev]
+optional = true
+[tool.poetry.group.dev.dependencies]
+# testing / CI
+pytest = "^7.2.0"
+pytest-trio = "^0.8.0"
+numpy = "^1.26.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
