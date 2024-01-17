@@ -11,6 +11,6 @@ setup(
     install_requires=[
         'numpy',
         'pendulum',
-        'purerpc'
+        'purerpc @ git+https://github.com/python-trio/purerpc.git@master#egg=purerpc'
     ]
 )
